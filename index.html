@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0e14">
+<title>車車屍搭普 · 網頁版</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<!-- 戰鬥 HUD -->
+<div id="hud">
+  <div id="hudTop">
+    <div class="bar"><div class="fill" id="hpFill"></div><div class="lbl" id="hpLbl">100/100</div></div>
+    <div class="bar" id="xpBar"><div class="fill" id="xpFill"></div></div>
+    <div id="hudRow">
+      <span id="stageLbl">第 1 關</span>
+      <span id="timeLbl">00:00</span>
+      <span>💀 <b id="killLbl">0</b></span>
+      <span>💰 <b id="goldLbl">0</b></span>
+      <span>Lv.<b id="lvLbl">1</b></span>
+    </div>
+  </div>
+  <div id="bossWrap">
+    <div class="bname" id="bossName">屍潮暴君</div>
+    <div class="bar"><div class="fill" id="bossFill"></div></div>
+  </div>
+  <div id="wpnRow"></div>
+  <div id="hudBtns">
+    <button class="cbtn" id="btnPause">⏸</button>
+    <button class="cbtn" id="gmFab">GM</button>
+  </div>
+</div>
+
+<!-- 車庫 -->
+<div class="screen" id="garage">
+  <div id="gTitle">
+    <h1>車車屍搭普<small>網頁版</small></h1>
+    <div id="curRow">
+      <span class="pill">💰 <span id="gGold">0</span></span>
+      <span class="pill">💎 <span id="gGem">0</span></span>
+    </div>
+  </div>
+  <div id="gScroll">
+    <div id="carStage">
+      <button class="carNav" id="carPrev">‹</button>
+      <canvas id="carCanvas" width="460" height="260"></canvas>
+      <button class="carNav" id="carNext">›</button>
+    </div>
+    <div id="carInfo">
+      <div id="carName"></div>
+      <div id="carDesc"></div>
+      <div id="carStats"></div>
+      <button class="btnSub" id="carAction"></button>
+    </div>
+    <div id="profileRow">
+      <span>帳號等級 <b id="pLv">1</b></span>
+      <span>戰力 <b id="pPower">0</b></span>
+      <span>最高關卡 <b id="pStage">1</b></span>
+    </div>
+    <div class="secH">🔧 車輛改裝</div>
+    <div id="upGrid"></div>
+    <div class="secH">🎒 裝備（點擊強化）</div>
+    <div id="eqGrid"></div>
+    <div id="gachaRow">
+      <button class="btnSub" id="btnGacha">🎰 抽裝備（100💎）</button>
+      <button class="btnSub" id="btnGacha10">🎰 十連抽（900💎）</button>
+    </div>
+    <div class="secH">🗺 選擇關卡</div>
+    <div id="stageRow"></div>
+  </div>
+  <div id="gBottom">
+    <button class="btnMain" id="btnGo">🚗 出擊割草</button>
+    <div id="gBottomRow">
+      <button class="btnSub" id="btnGmGarage">🛠 GM 面板</button>
+      <button class="btnRush" id="btnRush">👑 GM 無雙關</button>
+    </div>
+  </div>
+</div>
+
+<!-- 升級三選一 -->
+<div class="screen dim" id="levelup">
+  <div class="luTitle">⚡ 升級！選擇強化</div>
+  <div id="luCards"></div>
+</div>
+
+<!-- 暫停 -->
+<div class="screen dim" id="pauseMenu">
+  <div class="card pmCard">
+    <h2>暫停中</h2>
+    <button class="btnMain" id="btnResume">繼續戰鬥</button>
+    <button class="btnSub" id="btnSound">🔊 音效：開</button>
+    <button class="btnSub" id="btnQuit">🏳 放棄本局</button>
+  </div>
+</div>
+
+<!-- 結算 -->
+<div class="screen dim" id="result">
+  <div class="card rsCard">
+    <h2 id="rsTitle">✅ 關卡完成</h2>
+    <div id="rsStats"></div>
+    <div id="rsBtns">
+      <button class="btnSub" id="btnRevive">🔧 緊急維修復活（限1次）</button>
+      <button class="btnMain" id="btnNext">下一關 ▶</button>
+      <button class="btnSub" id="btnRetry">🔁 再來一局</button>
+      <button class="btnSub" id="btnHome">🏠 返回車庫</button>
+    </div>
+  </div>
+</div>
+
+<!-- GM 面板 -->
+<div class="screen dim" id="gmPanel">
+  <div class="card gmCard">
+    <div class="gmHead"><h2>🛠 GM 控制台</h2><button class="cbtn" id="gmClose">✕</button></div>
+    <div class="gmScroll" id="gmBody"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/cars_a.js"></script>
+<script src="js/cars_b.js"></script>
+<script src="js/meta.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/weapons.js"></script>
+<script src="js/render.js"></script>
+<script src="js/art.js"></script>
+<script src="js/foes_art.js"></script>
+<script src="js/boss_art.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/gm.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
