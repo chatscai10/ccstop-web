@@ -1,2 +1,13 @@
 .claude/
 *.tmp
+node_modules/
+www/
+keys/
+android/key.properties
+*.jks
+*.keystore
+ios/App/Pods/
+ios/App/output/
+android/.gradle/
+android/app/build/
+android/build/

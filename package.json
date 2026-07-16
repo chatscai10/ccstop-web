@@ -1,0 +1,28 @@
+{
+  "name": "ccstop-web",
+  "version": "1.0.0",
+  "description": "飆車割草 Roguelike 網頁遊戲（《車車屍搭普》致敬復刻），純靜態 HTML5 Canvas，手機直玩。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chatscai10/ccstop-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chatscai10/ccstop-web/issues"
+  },
+  "homepage": "https://github.com/chatscai10/ccstop-web#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.4.2",
+    "@capacitor/cli": "^8.4.2",
+    "@capacitor/core": "^8.4.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.4.2"
+  }
+}

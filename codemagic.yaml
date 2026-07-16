@@ -1,0 +1,70 @@
+# Codemagic CI：iOS 雲端建置 + 上傳 TestFlight（全程免 Mac）
+# 使用前置作業（一次性，都在網頁上完成）：
+#   1. codemagic.io 用 GitHub 帳號登入 → Add application → 選 chatscai10/ccstop-web
+#   2. App Store Connect 網頁 → 使用者與存取 → 整合 → 產生 API 金鑰（App Manager 權限）
+#   3. Codemagic → Teams > Integrations > Developer Portal → 貼上 API Key（名稱取 ccstop_asc）
+#   4. Codemagic 會用這把 key 自動建立/下載簽名憑證與描述檔，不需要 Mac 或 Xcode
+workflows:
+  ios-testflight:
+    name: iOS build → TestFlight
+    max_build_duration: 45
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: ccstop_asc
+    environment:
+      node: 20
+      xcode: latest
+      cocoapods: default
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.chatscai10.ccstop
+    scripts:
+      - name: 安裝依賴
+        script: npm install
+      - name: 準備遊戲網頁資源
+        script: bash ./build-www.sh
+      - name: Capacitor 同步 iOS
+        script: npx cap sync ios
+      - name: 建置簽名 IPA
+        script: |
+          xcode-project use-profiles
+          xcode-project build-ipa \
+            --workspace ios/App/App.xcworkspace \
+            --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integrations
+        submit_to_testflight: true
+
+  android-aab:
+    # 備用：雲端建 Android（本機其實就能建，這條給手機遠端觸發用）
+    name: Android release AAB
+    max_build_duration: 30
+    instance_type: linux_x2
+    environment:
+      node: 20
+      java: 21
+      groups:
+        - android_signing # 在 Codemagic 網頁設 CM_KEYSTORE(base64)/CM_KEYSTORE_PASSWORD/CM_KEY_ALIAS/CM_KEY_PASSWORD
+    scripts:
+      - name: 安裝依賴
+        script: npm install
+      - name: 準備遊戲網頁資源
+        script: bash ./build-www.sh
+      - name: Capacitor 同步 Android
+        script: npx cap sync android
+      - name: 還原 keystore
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > /tmp/keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=/tmp/keystore.jks
+          EOF
+      - name: 建置 AAB
+        script: cd android && ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.aab

@@ -1,0 +1,20 @@
+{
+  "appId": "com.chatscai10.ccstop",
+  "appName": "車車屍搭普",
+  "webDir": "www",
+  "backgroundColor": "#0b0e14",
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0b0e14"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#0b0e14",
+      "showSpinner": false
+    }
+  }
+}
