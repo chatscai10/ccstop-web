@@ -16,6 +16,7 @@ workflows:
       xcode: latest
       vars:
         BUNDLE_ID: "com.chatscai10.ccstop"
+        APP_STORE_APP_ID: 6791806321
     scripts:
       - name: 安裝依賴
         script: npm install
@@ -38,6 +39,13 @@ workflows:
             --create
           keychain add-certificates
           xcode-project use-profiles
+      - name: 設定 build 號（Apple 不接受重複 build 號，取 TestFlight 最新號 +1）
+        script: |
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APP_ID" 2>/dev/null || echo "0")
+          NEXT=$(($LATEST + 1))
+          echo "TestFlight 目前最新 build: $LATEST → 本次使用: $NEXT"
+          cd ios/App
+          agvtool new-version -all $NEXT
       - name: 建置簽名 IPA
         script: |
           xcode-project build-ipa \
