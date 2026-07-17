@@ -1,7 +1,7 @@
 {
   "name": "ccstop-web",
   "version": "1.0.0",
-  "description": "飆車割草 Roguelike 網頁遊戲（《車車屍搭普》致敬復刻），純靜態 HTML5 Canvas，手機直玩。",
+  "description": "輾好輾滿 — 開改裝車輾殭屍的單機割草 Roguelike，純靜態 HTML5 Canvas，手機直玩。",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">車車屍搭普</string>
-    <string name="title_activity_main">車車屍搭普</string>
+    <string name="app_name">輾好輾滿</string>
+    <string name="title_activity_main">輾好輾滿</string>
     <string name="package_name">com.chatscai10.ccstop</string>
     <string name="custom_url_scheme">com.chatscai10.ccstop</string>
 </resources>

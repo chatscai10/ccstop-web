@@ -1,6 +1,8 @@
-# 車車屍搭普 · 網頁版
+# 輾好輾滿 · 網頁版
 
-飆車割草 Roguelike 網頁遊戲（《車車屍搭普》致敬復刻），純靜態 HTML5 Canvas，手機直玩。
+開改裝車輾殭屍的單機割草 Roguelike，純靜態 HTML5 Canvas，手機瀏覽器直接玩。原創作品。
+
+線上試玩：https://chatscai10.github.io/ccstop-web/
 
 ## 玩法
 - 虛擬搖桿開車輾殭屍，撿寶石升級三選一
