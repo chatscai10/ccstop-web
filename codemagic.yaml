@@ -25,10 +25,17 @@ workflows:
         script: npx cap sync ios
       - name: 自動建立/抓取簽名檔（首次會自動產生憑證與描述檔）
         script: |
+          # 建立發佈憑證需要一把私鑰產生 CSR；優先用環境變數重用，否則生成新的
+          if [ -n "$CM_CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "$CM_CERTIFICATE_PRIVATE_KEY" > /tmp/cert_key.pem
+          else
+            openssl genrsa -out /tmp/cert_key.pem 2048
+          fi
+          keychain initialize
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
+            --certificate-key=@file:/tmp/cert_key.pem \
             --create
-          keychain initialize
           keychain add-certificates
           xcode-project use-profiles
       - name: 建置簽名 IPA
