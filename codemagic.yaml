@@ -14,9 +14,8 @@ workflows:
     environment:
       node: 20
       xcode: latest
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.chatscai10.ccstop
+      vars:
+        BUNDLE_ID: "com.chatscai10.ccstop"
     scripts:
       - name: 安裝依賴
         script: npm install
@@ -24,9 +23,16 @@ workflows:
         script: bash ./build-www.sh
       - name: Capacitor 同步 iOS
         script: npx cap sync ios
+      - name: 自動建立/抓取簽名檔（首次會自動產生憑證與描述檔）
+        script: |
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+          keychain initialize
+          keychain add-certificates
+          xcode-project use-profiles
       - name: 建置簽名 IPA
         script: |
-          xcode-project use-profiles
           xcode-project build-ipa \
             --project ios/App/App.xcodeproj \
             --scheme App
