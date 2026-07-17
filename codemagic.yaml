@@ -14,7 +14,6 @@ workflows:
     environment:
       node: 20
       xcode: latest
-      cocoapods: default
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.chatscai10.ccstop
@@ -29,7 +28,7 @@ workflows:
         script: |
           xcode-project use-profiles
           xcode-project build-ipa \
-            --workspace ios/App/App.xcworkspace \
+            --project ios/App/App.xcodeproj \
             --scheme App
     artifacts:
       - build/ios/ipa/*.ipa
