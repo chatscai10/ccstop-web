@@ -12,6 +12,8 @@ workflows:
     integrations:
       app_store_connect: ccstop_asc
     environment:
+      groups:
+        - signing          # 內含 CM_CERTIFICATE_PRIVATE_KEY（全帳號共用固定私鑰，PEM）
       node: 22
       xcode: latest
       vars:
