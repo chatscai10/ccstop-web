@@ -13,7 +13,7 @@ workflows:
       app_store_connect: ccstop_asc
     environment:
       groups:
-        - signing          # 內含 CM_CERTIFICATE_PRIVATE_KEY（全帳號共用固定私鑰，PEM）
+        - signing            # Codemagic 網頁設 CERTIFICATE_PRIVATE_KEY_B64（全帳號共用固定私鑰，Secret）
       node: 22
       xcode: latest
       vars:
@@ -26,28 +26,25 @@ workflows:
         script: bash ./build-www.sh
       - name: Capacitor 同步 iOS
         script: npx cap sync ios
-      - name: 自動建立/抓取簽名檔（首次會自動產生憑證與描述檔）
+      - name: 設定 build number
+        # Apple 不接受重複 build 號，用 Codemagic 遞增計數器確保唯一
         script: |
-          # 建立發佈憑證需要一把私鑰產生 CSR；優先用環境變數重用，否則生成新的
-          if [ -n "$CM_CERTIFICATE_PRIVATE_KEY" ]; then
-            echo "$CM_CERTIFICATE_PRIVATE_KEY" > /tmp/cert_key.pem
-          else
-            openssl genrsa -out /tmp/cert_key.pem 2048
-          fi
+          cd ios/App
+          agvtool new-version -all "$PROJECT_BUILD_NUMBER"
+      - name: 設定簽名（全帳號共用固定私鑰）
+        script: |
           keychain initialize
+          echo "$CERTIFICATE_PRIVATE_KEY_B64" | base64 --decode > /tmp/cert_key.pem
+          # 自癒：只刪「失效」描述檔（憑證變動會使舊描述檔失效，沿用會讓 archive 報 requires a provisioning profile）
+          app-store-connect profiles list --type IOS_APP_STORE --state INVALID --json 2>/dev/null \
+            | jq -r '(if type=="object" then .data else . end)[]?.id // empty' \
+            | while read pid; do [ -n "$pid" ] && app-store-connect profiles delete "$pid" --ignore-not-found || true; done
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --certificate-key=@file:/tmp/cert_key.pem \
             --create
           keychain add-certificates
           xcode-project use-profiles
-      - name: 設定 build 號（Apple 不接受重複 build 號，取 TestFlight 最新號 +1）
-        script: |
-          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APP_ID" 2>/dev/null || echo "0")
-          NEXT=$(($LATEST + 1))
-          echo "TestFlight 目前最新 build: $LATEST → 本次使用: $NEXT"
-          cd ios/App
-          agvtool new-version -all $NEXT
       - name: 建置簽名 IPA
         script: |
           xcode-project build-ipa \
